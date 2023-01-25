@@ -7,7 +7,7 @@ function MainContainer() {
   const [stocks, setStocks] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [sortBy, setSortBy] = useState("Alphabetically");
-  const [filterBy, setFilterby] = useState("All");
+  const [filterBy, setFilterBy] = useState("All");
 
   useEffect(() => {
     fetch("http://localhost:3001/stocks")
@@ -38,14 +38,23 @@ function MainContainer() {
   if (sortBy === "Alphabetically") {
     stocks.sort((a, b) => a.name < b.name ? -1 : 1);
   } else if (sortBy === "Price") {
-    stocks.sort((a,b) => a.price < b.price ? -1 : 1);
+    stocks.sort((a, b) => a.price < b.price ? -1 : 1);
   }
 
-  const filteredStocks = stocks.filter(stock => stock)
+  function onFilterChange(filterValue) {
+    setFilterBy(filterValue)
+  }
+
+  let filteredStocks = []
+  if (filterBy === "All"){ 
+    filteredStocks = stocks.filter(stock => stock)
+  } else {
+    filteredStocks = stocks.filter(stock => stock.type === filterBy)
+  }
 
   return (
     <div>
-      <SearchBar onSortChange={onSortChange} />
+      <SearchBar onSortChange={onSortChange} onFilterChange={onFilterChange} />
       <div className="row">
         <div className="col-8">
           <StockContainer filteredStocks={filteredStocks} addStock={addStock} />
